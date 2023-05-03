@@ -5,7 +5,9 @@ const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
   // TODO: Need theme switcher
-  // TODO: theme-light / theme-dark needs to go on the body instead
+  //       - Need to add style="color-scheme: dark;" to <html>
+  //       - Need to add `theme-dark` / `theme-light` to <body>
+  // TODO: theme-light / theme-dark needs to go on the body instead (see above)
   // Probably want something similar to https://github.com/tailwindlabs/tailwindcss.com/blob/dff1b6211acb2286b4094b992ac145211734400d/src/pages/_document.js#L35
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24 theme-light">
