@@ -120,6 +120,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     return (
       <button
+        aria-disabled={isDisabled ? "true" : undefined}
         className={getStyles({ variant, isDisabled, isButtonGroup })}
         onClick={handleClick}
         ref={ref}
