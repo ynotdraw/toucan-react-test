@@ -1,6 +1,13 @@
+// NOTE: We won't need to do this in a library / package.
+//       Since I'm testing things out in a Next.js app though, we need this
+//       so Next.js can determine server vs client components
 "use client";
 
 import * as React from "react";
+
+// Converted the Ember component to React
+// https://github.com/CrowdStrike/ember-toucan-core/blob/main/packages/ember-toucan-core/src/components/button.ts
+// Most of this could be copy / pasted; however, there are some React-specific syntax/pattern changes
 
 const VALID_VARIANTS = [
   "bare",
