@@ -4,7 +4,7 @@ import * as React from "react";
 
 import { Button } from "@/components/button";
 import { useMultipleSelection, useCombobox } from "downshift";
-import { size, useFloating } from "@floating-ui/react";
+import { autoUpdate, size, useFloating } from "@floating-ui/react";
 import clsx from "clsx";
 
 interface Field {
@@ -119,6 +119,7 @@ const MultiselectControlBaseline = ({
         },
       }),
     ],
+    whileElementsMounted: autoUpdate,
   });
 
   const id = React.useId();
@@ -299,6 +300,7 @@ const MultiselectPackageB = ({ label, name, onChange }: ComboboxField) => {
         },
       }),
     ],
+    whileElementsMounted: autoUpdate,
   });
 
   const id = React.useId();
