@@ -93,7 +93,7 @@ const elements = [
   "Chocolate chips",
 ];
 
-function getFilteredItems(selectedItems: Array<string>, inputValue: string) {
+const getFilteredItems = (selectedItems: Array<string>, inputValue: string) => {
   const lowerCasedInputValue = inputValue.toLowerCase();
 
   return elements.filter(
@@ -101,9 +101,13 @@ function getFilteredItems(selectedItems: Array<string>, inputValue: string) {
       !selectedItems.includes(element) &&
       element.toLowerCase().startsWith(lowerCasedInputValue)
   );
-}
+};
 
-function DropdownMultipleCombobox({ label, name, onChange }: ComboboxField) {
+const MultiselectControlBaseline = ({
+  label,
+  name,
+  onChange,
+}: ComboboxField) => {
   const { refs, floatingStyles } = useFloating({
     placement: "bottom-start",
     middleware: [
@@ -207,7 +211,8 @@ function DropdownMultipleCombobox({ label, name, onChange }: ComboboxField) {
             {selectedItem}
 
             <button
-              className="px-2 focusable"
+              aria-label={`Remove "${selectedItem}"`}
+              className="ml-2 focusable"
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -251,13 +256,13 @@ function DropdownMultipleCombobox({ label, name, onChange }: ComboboxField) {
       </div>
     </div>
   );
-}
+};
 
 export default function MultiselectPage() {
   return (
     <form className="space-y-6" onSubmit={() => {}}>
       <InputField label="Order name" name="name" />
-      <DropdownMultipleCombobox
+      <MultiselectControlBaseline
         label="Toppings to include"
         name="toppings"
         onChange={(values) => {
