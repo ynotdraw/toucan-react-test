@@ -7,6 +7,7 @@ import * as React from "react";
 
 import { autoUpdate, size, useFloating } from "@floating-ui/react";
 import { Button } from "@/components/button";
+import { elements } from "../layout";
 import { InputField } from "@/components/forms/input-field";
 import { Label } from "@/components/label";
 import { TextareaField } from "@/components/forms/textarea-field";
@@ -61,22 +62,6 @@ interface ComboboxField {
   name: string;
   onChange?: (values: Array<string>) => void;
 }
-
-const elements = [
-  "Sprinkles",
-  "Hot fudge",
-  "Whipped cream",
-  "Pickles",
-  "Avocado",
-  "Banana",
-  "Oreo",
-  "Chopped walnuts",
-  "Chocolate sprinkles",
-  "Swedish fish",
-  "Mini M&Ms",
-  "Snickers",
-  "Chocolate chips",
-];
 
 const getFilteredItems = (inputValue: string) => {
   const lowerCasedInputValue = inputValue.toLowerCase();
