@@ -75,6 +75,18 @@ const elements = [
   "Chocolate chips",
 ];
 
+const getFilteredItems = (inputValue: string) => {
+  const lowerCasedInputValue = inputValue.toLowerCase();
+
+  if (lowerCasedInputValue?.length === 0) {
+    return elements;
+  }
+
+  return elements.filter((element) =>
+    element.toLowerCase().startsWith(lowerCasedInputValue)
+  );
+};
+
 const MultiselectPackageC = ({ label, name, onChange }: ComboboxField) => {
   const { refs, floatingStyles } = useFloating({
     placement: "bottom-start",
@@ -93,6 +105,8 @@ const MultiselectPackageC = ({ label, name, onChange }: ComboboxField) => {
   const id = React.useId();
   const [inputValue, setInputValue] = React.useState<string>("");
   const [selectedItems, setSelectedItems] = React.useState<Array<string>>([]);
+
+  const items = getFilteredItems(inputValue);
 
   const { getSelectedItemProps, getDropdownProps, removeSelectedItem } =
     useMultipleSelection({
@@ -121,7 +135,7 @@ const MultiselectPackageC = ({ label, name, onChange }: ComboboxField) => {
     getItemProps,
   } = useCombobox({
     id,
-    items: elements,
+    items,
     inputValue,
     selectedItem: null,
     stateReducer(_state, actionAndChanges) {
@@ -237,7 +251,7 @@ const MultiselectPackageC = ({ label, name, onChange }: ComboboxField) => {
           {...getMenuProps()}
         >
           {isOpen &&
-            elements.map((item, index) => (
+            items.map((item, index) => (
               <li
                 className={clsx(
                   "p-2 flex text-titles-and-attribute items-center",
@@ -246,9 +260,13 @@ const MultiselectPackageC = ({ label, name, onChange }: ComboboxField) => {
                 key={`${item}${index}`}
                 {...getItemProps({ item, index })}
               >
-                {/* TODO: a11y improvements */}
-                <CheckboxControl isChecked={selectedItems?.includes(item)} />
-                <span className="ml-2">{item}</span>
+                <CheckboxControl
+                  id={`${item}${index}`}
+                  isChecked={selectedItems?.includes(item)}
+                />
+                <label className="ml-2" htmlFor={`${item}${index}`}>
+                  {item}
+                </label>
               </li>
             ))}
         </ul>
