@@ -93,7 +93,7 @@ const elements = [
   "Chocolate chips",
 ];
 
-function getFilteredItems(selectedItems, inputValue) {
+function getFilteredItems(selectedItems: Array<string>, inputValue: string) {
   const lowerCasedInputValue = inputValue.toLowerCase();
 
   return elements.filter(
