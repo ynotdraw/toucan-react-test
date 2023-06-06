@@ -254,6 +254,7 @@ const MultiselectControlBaseline = ({
         <input
           className="bg-transparent focus:outline-none"
           name={name}
+          placeholder={selectedItems?.length === 0 && "Select toppings"}
           {...getInputProps(getDropdownProps({ preventKeyAction: isOpen }))}
         />
       </div>
