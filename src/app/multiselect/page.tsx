@@ -284,6 +284,181 @@ const MultiselectControlBaseline = ({
   );
 };
 
+const MultiselectPackageB = ({ label, name, onChange }: ComboboxField) => {
+  const { refs, floatingStyles } = useFloating({
+    placement: "bottom-start",
+    middleware: [
+      size({
+        apply({ rects, elements }) {
+          Object.assign(elements.floating.style, {
+            width: `${rects.reference.width}px`,
+          });
+        },
+      }),
+    ],
+  });
+
+  const id = React.useId();
+  const [inputValue, setInputValue] = React.useState<string>("");
+  const [selectedItems, setSelectedItems] = React.useState<Array<string>>([]);
+
+  const items = React.useMemo(
+    () => getFilteredItems(selectedItems, inputValue),
+    [selectedItems, inputValue]
+  );
+
+  const { getSelectedItemProps, getDropdownProps, removeSelectedItem } =
+    useMultipleSelection({
+      selectedItems,
+      onStateChange({ selectedItems: newSelectedItems, type }) {
+        switch (type) {
+          case useMultipleSelection.stateChangeTypes
+            .SelectedItemKeyDownBackspace:
+          case useMultipleSelection.stateChangeTypes.SelectedItemKeyDownDelete:
+          case useMultipleSelection.stateChangeTypes.DropdownKeyDownBackspace:
+          case useMultipleSelection.stateChangeTypes.FunctionRemoveSelectedItem:
+            setSelectedItems(newSelectedItems || []);
+            onChange?.(newSelectedItems || []);
+            break;
+          default:
+            break;
+        }
+      },
+    });
+  const {
+    isOpen,
+    getLabelProps,
+    getMenuProps,
+    getInputProps,
+    highlightedIndex,
+    getItemProps,
+  } = useCombobox({
+    id,
+    items,
+    inputValue,
+    selectedItem: null,
+    stateReducer(_state, actionAndChanges) {
+      const { changes, type } = actionAndChanges;
+
+      switch (type) {
+        case useCombobox.stateChangeTypes.InputKeyDownEnter:
+        case useCombobox.stateChangeTypes.ItemClick:
+        case useCombobox.stateChangeTypes.InputBlur:
+          return {
+            ...changes,
+            ...(changes.selectedItem && { isOpen: true, highlightedIndex: 0 }),
+          };
+        default:
+          return changes;
+      }
+    },
+    onStateChange({
+      inputValue: newInputValue,
+      type,
+      selectedItem: newSelectedItem,
+    }: any) {
+      switch (type) {
+        case useCombobox.stateChangeTypes.InputKeyDownEnter:
+        case useCombobox.stateChangeTypes.ItemClick:
+          const newItems = [...selectedItems, newSelectedItem];
+
+          onChange?.(newItems);
+          setSelectedItems(newItems);
+          break;
+        case useCombobox.stateChangeTypes.InputChange:
+          setInputValue(newInputValue);
+          break;
+        default:
+          break;
+      }
+    },
+  });
+  return (
+    <div className="space-y-1.5">
+      <Label {...getLabelProps()}>{label}</Label>
+
+      <div
+        className="focus:outline-none flex justify-between rounded-sm p-1 transition-shadow shadow-focusable-outline focus:shadow-focus-outline bg-overlay-1 text-titles-and-attributes items-center min-h-[2.5rem]"
+        ref={refs.setReference}
+      >
+        <div className="flex flex-wrap gap-1">
+          {selectedItems.map((selectedItem, index) => (
+            <span
+              className="min-h-6 items-center gap-x-2.5 rounded-sm bg-normal-idle px-2 py-1"
+              key={`selected-item-${index}`}
+              {...getSelectedItemProps({ selectedItem, index })}
+            >
+              {selectedItem}
+
+              <button
+                aria-label={`Remove "${selectedItem}"`}
+                className="ml-2 focusable"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+
+                  removeSelectedItem(selectedItem);
+                }}
+              >
+                &#10005;
+              </button>
+            </span>
+          ))}
+
+          <input
+            className="bg-transparent focus:outline-none"
+            name={name}
+            {...getInputProps(getDropdownProps({ preventKeyAction: isOpen }))}
+          />
+        </div>
+
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          className={clsx(
+            "min-w-6 min-h-6 w-6 h-6 mr-2 transform-gpu transition-transform duration-300",
+            isOpen && "rotate-180"
+          )}
+        >
+          <path
+            d="M6 9.1L9 12l3 2.9 3-2.9 3-2.9"
+            fill="none"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+          ></path>
+        </svg>
+      </div>
+
+      <div ref={refs.setFloating} style={floatingStyles}>
+        <ul
+          className={
+            "bg-surface-2xl shadow-xl absolute overflow-y-auto max-h-40 space-y-1 w-full"
+          }
+          {...getMenuProps()}
+        >
+          {isOpen &&
+            items.map((item, index) => (
+              <li
+                className={clsx(
+                  "p-2 text-titles-and-attributes",
+                  highlightedIndex === index && "bg-overlay-1"
+                )}
+                key={`${item}${index}`}
+                {...getItemProps({ item, index })}
+              >
+                {item}
+              </li>
+            ))}
+        </ul>
+      </div>
+    </div>
+  );
+};
+
 export default function MultiselectPage() {
   return (
     <form className="space-y-6" onSubmit={() => {}}>
@@ -295,6 +470,15 @@ export default function MultiselectPage() {
           console.log(values);
         }}
       />
+
+      {/* <MultiselectPackageB
+        label="Toppings to include"
+        name="toppings"
+        onChange={(values) => {
+          console.log(values);
+        }}
+      /> */}
+
       <TextareaField
         label="Special instructions (optional)"
         name="instructions"
