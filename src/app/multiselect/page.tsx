@@ -121,6 +121,8 @@ const MultiselectControlBaseline = ({
     ],
   });
 
+  const id = React.useId();
+  const [isBoxOpen, setIsBoxOpen] = React.useState<boolean>(false);
   const [inputValue, setInputValue] = React.useState<string>("");
   const [selectedItems, setSelectedItems] = React.useState<Array<string>>([]);
 
@@ -155,8 +157,10 @@ const MultiselectControlBaseline = ({
     highlightedIndex,
     getItemProps,
   } = useCombobox({
+    id,
     items,
     inputValue,
+    isOpen: isBoxOpen,
     selectedItem: null,
     stateReducer(_state, actionAndChanges) {
       const { changes, type } = actionAndChanges;
@@ -165,6 +169,13 @@ const MultiselectControlBaseline = ({
         case useCombobox.stateChangeTypes.InputKeyDownEnter:
         case useCombobox.stateChangeTypes.ItemClick:
         case useCombobox.stateChangeTypes.InputBlur:
+          if (inputValue === "" || !highlightedIndex) {
+            return changes;
+          }
+
+          setIsBoxOpen(false);
+          setInputValue("");
+
           return {
             ...changes,
             ...(changes.selectedItem && { isOpen: true, highlightedIndex: 0 }),
@@ -181,13 +192,25 @@ const MultiselectControlBaseline = ({
       switch (type) {
         case useCombobox.stateChangeTypes.InputKeyDownEnter:
         case useCombobox.stateChangeTypes.ItemClick:
+          if (newInputValue === "" || !newSelectedItem) {
+            break;
+          }
+
           const newItems = [...selectedItems, newSelectedItem];
 
           onChange?.(newItems);
           setSelectedItems(newItems);
+
+          setIsBoxOpen(false);
+          setInputValue("");
           break;
         case useCombobox.stateChangeTypes.InputChange:
           setInputValue(newInputValue);
+
+          if (!isBoxOpen) {
+            setIsBoxOpen(true);
+          }
+
           break;
         default:
           break;
@@ -201,6 +224,9 @@ const MultiselectControlBaseline = ({
       <div
         className="focus:outline-none flex flex-wrap rounded-sm p-1 transition-shadow shadow-focusable-outline focus:shadow-focus-outline bg-overlay-1 text-titles-and-attributes items-center gap-1 min-h-[2.5rem]"
         ref={refs.setReference}
+        onClick={() => setIsBoxOpen(true)}
+        onFocus={() => setIsBoxOpen(true)}
+        onBlur={() => setIsBoxOpen(false)}
       >
         {selectedItems.map((selectedItem, index) => (
           <span
