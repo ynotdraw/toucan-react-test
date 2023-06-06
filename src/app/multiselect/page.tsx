@@ -13,6 +13,12 @@ interface Field {
   onChange?: (value: string) => void;
 }
 
+interface ComboboxField {
+  label: string;
+  name: string;
+  onChange?: (values: Array<string>) => void;
+}
+
 const Label = ({
   children,
   htmlFor,
@@ -97,7 +103,7 @@ function getFilteredItems(selectedItems, inputValue) {
   );
 }
 
-function DropdownMultipleCombobox({ label, name }: Field) {
+function DropdownMultipleCombobox({ label, name, onChange }: ComboboxField) {
   const { refs, floatingStyles } = useFloating({
     placement: "bottom-start",
     middleware: [
@@ -130,6 +136,7 @@ function DropdownMultipleCombobox({ label, name }: Field) {
           case useMultipleSelection.stateChangeTypes.DropdownKeyDownBackspace:
           case useMultipleSelection.stateChangeTypes.FunctionRemoveSelectedItem:
             setSelectedItems(newSelectedItems || []);
+            onChange?.(newSelectedItems || []);
             break;
           default:
             break;
@@ -170,8 +177,10 @@ function DropdownMultipleCombobox({ label, name }: Field) {
       switch (type) {
         case useCombobox.stateChangeTypes.InputKeyDownEnter:
         case useCombobox.stateChangeTypes.ItemClick:
-          setSelectedItems([...selectedItems, newSelectedItem]);
+          const newItems = [...selectedItems, newSelectedItem];
 
+          onChange?.(newItems);
+          setSelectedItems(newItems);
           break;
         case useCombobox.stateChangeTypes.InputChange:
           setInputValue(newInputValue);
@@ -248,7 +257,13 @@ export default function MultiselectPage() {
   return (
     <form className="space-y-6" onSubmit={() => {}}>
       <InputField label="Order name" name="name" />
-      <DropdownMultipleCombobox label="Toppings to include" name="toppings" />
+      <DropdownMultipleCombobox
+        label="Toppings to include"
+        name="toppings"
+        onChange={(values) => {
+          console.log(values);
+        }}
+      />
       <TextareaField
         label="Special instructions (optional)"
         name="instructions"
