@@ -33,6 +33,18 @@ const elements = [
   "Chocolate chips",
 ];
 
+const getFilteredItems = (inputValue: string) => {
+  const lowerCasedInputValue = inputValue.toLowerCase();
+
+  if (lowerCasedInputValue?.length === 0) {
+    return elements;
+  }
+
+  return elements.filter((element) =>
+    element.toLowerCase().startsWith(lowerCasedInputValue)
+  );
+};
+
 const MultiselectControlBaseline = ({
   label,
   name,
@@ -56,6 +68,8 @@ const MultiselectControlBaseline = ({
   const [isBoxOpen, setIsBoxOpen] = React.useState<boolean>(false);
   const [inputValue, setInputValue] = React.useState<string>("");
   const [selectedItems, setSelectedItems] = React.useState<Array<string>>([]);
+
+  const items = getFilteredItems(inputValue);
 
   const { getSelectedItemProps, getDropdownProps, removeSelectedItem } =
     useMultipleSelection({
@@ -84,7 +98,7 @@ const MultiselectControlBaseline = ({
     getItemProps,
   } = useCombobox({
     id,
-    items: elements,
+    items,
     inputValue,
     isOpen: isBoxOpen,
     selectedItem: null,
@@ -195,7 +209,7 @@ const MultiselectControlBaseline = ({
           {...getMenuProps()}
         >
           {isOpen &&
-            elements.map((item, index) => (
+            items.map((item, index) => (
               <li
                 className={clsx(
                   "p-2 text-titles-and-attributes",
