@@ -33,16 +33,6 @@ const elements = [
   "Chocolate chips",
 ];
 
-const getFilteredItems = (selectedItems: Array<string>, inputValue: string) => {
-  const lowerCasedInputValue = inputValue.toLowerCase();
-
-  return elements.filter(
-    (element) =>
-      !selectedItems.includes(element) &&
-      element.toLowerCase().startsWith(lowerCasedInputValue)
-  );
-};
-
 const MultiselectPackageB = ({ label, name, onChange }: ComboboxField) => {
   const { refs, floatingStyles } = useFloating({
     placement: "bottom-start",
@@ -61,11 +51,6 @@ const MultiselectPackageB = ({ label, name, onChange }: ComboboxField) => {
   const id = React.useId();
   const [inputValue, setInputValue] = React.useState<string>("");
   const [selectedItems, setSelectedItems] = React.useState<Array<string>>([]);
-
-  const items = React.useMemo(
-    () => getFilteredItems(selectedItems, inputValue),
-    [selectedItems, inputValue]
-  );
 
   const { getSelectedItemProps, getDropdownProps, removeSelectedItem } =
     useMultipleSelection({
@@ -94,7 +79,7 @@ const MultiselectPackageB = ({ label, name, onChange }: ComboboxField) => {
     getItemProps,
   } = useCombobox({
     id,
-    items,
+    items: elements,
     inputValue,
     selectedItem: null,
     stateReducer(_state, actionAndChanges) {
@@ -210,7 +195,7 @@ const MultiselectPackageB = ({ label, name, onChange }: ComboboxField) => {
           {...getMenuProps()}
         >
           {isOpen &&
-            items.map((item, index) => (
+            elements.map((item, index) => (
               <li
                 className={clsx(
                   "p-2 text-titles-and-attributes",
