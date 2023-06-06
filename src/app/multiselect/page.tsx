@@ -254,7 +254,9 @@ const MultiselectControlBaseline = ({
         <input
           className="bg-transparent focus:outline-none"
           name={name}
-          placeholder={selectedItems?.length === 0 && "Select toppings"}
+          placeholder={
+            selectedItems?.length === 0 ? "Select toppings" : undefined
+          }
           {...getInputProps(getDropdownProps({ preventKeyAction: isOpen }))}
         />
       </div>
@@ -345,6 +347,7 @@ const MultiselectPackageB = ({ label, name, onChange }: ComboboxField) => {
         case useCombobox.stateChangeTypes.InputKeyDownEnter:
         case useCombobox.stateChangeTypes.ItemClick:
         case useCombobox.stateChangeTypes.InputBlur:
+          setInputValue("");
           return {
             ...changes,
             ...(changes.selectedItem && { isOpen: true, highlightedIndex: 0 }),
@@ -361,10 +364,15 @@ const MultiselectPackageB = ({ label, name, onChange }: ComboboxField) => {
       switch (type) {
         case useCombobox.stateChangeTypes.InputKeyDownEnter:
         case useCombobox.stateChangeTypes.ItemClick:
+          if (newInputValue === "" || !newSelectedItem) {
+            break;
+          }
+
           const newItems = [...selectedItems, newSelectedItem];
 
           onChange?.(newItems);
           setSelectedItems(newItems);
+          setInputValue("");
           break;
         case useCombobox.stateChangeTypes.InputChange:
           setInputValue(newInputValue);
@@ -409,6 +417,9 @@ const MultiselectPackageB = ({ label, name, onChange }: ComboboxField) => {
           <input
             className="bg-transparent focus:outline-none"
             name={name}
+            placeholder={
+              selectedItems?.length === 0 ? "Select toppings" : undefined
+            }
             {...getInputProps(getDropdownProps({ preventKeyAction: isOpen }))}
           />
         </div>
