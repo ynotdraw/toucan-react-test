@@ -26,9 +26,7 @@ export default function RootLayout({
          Probably want something similar to https://github.com/tailwindlabs/tailwindcss.com/blob/dff1b6211acb2286b4094b992ac145211734400d/src/pages/_document.js#L35
 
         */}
-        <main className="flex min-h-screen flex-col theme-light">
-          {children}
-        </main>
+        <main className="min-h-screen grid theme-light">{children}</main>
       </body>
     </html>
   );
