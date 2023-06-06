@@ -168,22 +168,20 @@ const MultiselectPackageB = ({ label, name, onChange }: ComboboxField) => {
 
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          stroke="currentColor"
+          fill="none"
           viewBox="0 0 24 24"
+          strokeWidth={1.5}
+          stroke="currentColor"
           className={clsx(
-            "min-w-6 min-h-6 w-6 h-6 mr-2 transform-gpu transition-transform duration-300",
+            "min-w-4 min-h-4 w-4 h-4 mr-2 transform-gpu transition-transform duration-300",
             isOpen && "rotate-180"
           )}
         >
           <path
-            d="M6 9.1L9 12l3 2.9 3-2.9 3-2.9"
-            fill="none"
             strokeLinecap="round"
             strokeLinejoin="round"
-            strokeWidth="2"
-          ></path>
+            d="M19.5 8.25l-7.5 7.5-7.5-7.5"
+          />
         </svg>
       </div>
 
