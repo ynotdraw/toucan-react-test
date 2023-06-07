@@ -150,7 +150,7 @@ const MultiselectControlBaseline = ({
       <Label {...getLabelProps()}>{label}</Label>
 
       <div
-        className="focus:outline-none flex flex-wrap rounded-sm p-1 transition-shadow shadow-focusable-outline focus:shadow-focus-outline bg-overlay-1 text-titles-and-attributes items-center gap-1 min-h-[2.5rem]"
+        className="focus:outline-none flex flex-wrap rounded-sm p-1 transition-shadow shadow-focusable-outline focus:shadow-focus-outline bg-overlay-1 text-titles-and-attributes items-center gap-1 min-h-[2.5rem] focus-within:shadow-focus-outline"
         ref={refs.setReference}
         onClick={() => setIsBoxOpen(true)}
         onFocus={() => setIsBoxOpen(true)}

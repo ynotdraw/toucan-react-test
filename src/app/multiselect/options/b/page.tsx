@@ -131,7 +131,7 @@ const MultiselectPackageB = ({ label, name, onChange }: ComboboxField) => {
       <Label {...getLabelProps()}>{label}</Label>
 
       <div
-        className="focus:outline-none flex justify-between rounded-sm p-1 transition-shadow shadow-focusable-outline focus:shadow-focus-outline bg-overlay-1 text-titles-and-attributes items-center min-h-[2.5rem]"
+        className="focus:outline-none flex justify-between rounded-sm p-1 transition-shadow shadow-focusable-outline focus-within:shadow-focus-outline bg-overlay-1 text-titles-and-attributes items-center min-h-[2.5rem]"
         ref={refs.setReference}
       >
         <div className="flex flex-wrap gap-1 w-full">
