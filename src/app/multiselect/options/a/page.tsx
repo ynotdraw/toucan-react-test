@@ -192,7 +192,7 @@ const MultiselectControlBaseline = ({
       <div ref={refs.setFloating} style={floatingStyles}>
         <ul
           className={
-            "bg-surface-2xl shadow-xl absolute overflow-y-auto max-h-[17rem] space-y-1 w-full"
+            "bg-surface-2xl shadow-xl absolute overflow-y-auto max-h-[15.5rem] w-full"
           }
           {...getMenuProps()}
         >
@@ -201,7 +201,10 @@ const MultiselectControlBaseline = ({
               <li
                 className={clsx(
                   "p-2 text-titles-and-attributes",
-                  highlightedIndex === index && "bg-overlay-1"
+                  highlightedIndex === index && "bg-overlay-1",
+                  (highlightedIndex === index ||
+                    selectedItems.includes(item)) &&
+                    "bg-overlay-1"
                 )}
                 key={`${item}${index}`}
                 {...getItemProps({ item, index })}
