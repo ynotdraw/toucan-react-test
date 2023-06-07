@@ -190,7 +190,7 @@ const MultiselectPackageB = ({ label, name, onChange }: ComboboxField) => {
       <div ref={refs.setFloating} style={floatingStyles}>
         <ul
           className={
-            "bg-surface-2xl shadow-xl absolute overflow-y-auto max-h-40 space-y-1 w-full"
+            "bg-surface-2xl shadow-xl absolute overflow-y-auto max-h-[17rem] space-y-1 w-full"
           }
           {...getMenuProps()}
         >
