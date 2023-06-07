@@ -1,19 +1,19 @@
 import * as React from "react";
 
 export const elements = [
-  "Sprinkles",
-  "Hot fudge",
-  "Whipped cream",
-  "Pickles",
   "Avocado",
   "Banana",
-  "Oreo",
-  "Chopped walnuts",
-  "Chocolate sprinkles",
-  "Swedish fish",
-  "Mini M&Ms",
-  "Snickers",
   "Chocolate chips",
+  "Chocolate sprinkles",
+  "Chopped walnuts",
+  "Hot fudge",
+  "Mini M&Ms",
+  "Oreo",
+  "Pickles",
+  "Snickers",
+  "Sprinkles",
+  "Swedish fish",
+  "Whipped cream",
 ];
 
 export default function MultiselectLayout({
