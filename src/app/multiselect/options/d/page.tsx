@@ -315,16 +315,17 @@ const MultiselectPackageD = ({ label, name, onChange }: ComboboxField) => {
                     )}
                     {...getItemProps({ item, index })}
                   >
-                    {/* TODO: This logic still isn't quite right, as when typing to filter I get results */}
                     <CheckboxControl
                       id={`${item}${index}`}
                       isChecked={
-                        index === 0
+                        index === 0 && !inputValue
                           ? Boolean(selectAllState === "checked")
                           : selectedItems?.includes(item)
                       }
                       isIndeterminate={
-                        index === 0 && selectAllState === "indeterminate"
+                        index === 0 &&
+                        !inputValue &&
+                        selectAllState === "indeterminate"
                           ? true
                           : false
                       }
