@@ -134,7 +134,7 @@ const MultiselectPackageB = ({ label, name, onChange }: ComboboxField) => {
         className="focus:outline-none flex justify-between rounded-sm p-1 transition-shadow shadow-focusable-outline focus:shadow-focus-outline bg-overlay-1 text-titles-and-attributes items-center min-h-[2.5rem]"
         ref={refs.setReference}
       >
-        <div className="flex flex-wrap gap-1">
+        <div className="flex flex-wrap gap-1 w-full">
           {selectedItems.map((selectedItem, index) => (
             <span
               className="min-h-6 items-center gap-x-2.5 rounded-sm bg-normal-idle px-2 py-1"
@@ -159,7 +159,7 @@ const MultiselectPackageB = ({ label, name, onChange }: ComboboxField) => {
           ))}
 
           <input
-            className="bg-transparent focus:outline-none"
+            className="bg-transparent focus:outline-none flex flex-grow"
             name={name}
             placeholder={
               selectedItems?.length === 0 ? "Select toppings" : undefined
