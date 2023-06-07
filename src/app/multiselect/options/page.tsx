@@ -24,6 +24,9 @@ export default function MultiselectOptionsPage() {
       <li>
         <LinkOption href="/multiselect/options/c">View Option C</LinkOption>
       </li>
+      <li>
+        <LinkOption href="/multiselect/options/d">View Option D</LinkOption>
+      </li>
     </ul>
   );
 }
