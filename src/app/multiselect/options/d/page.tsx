@@ -363,7 +363,7 @@ const MultiselectPackageD = ({
                     </label>
                   </li>
 
-                  {index === 0 ? (
+                  {index === 0 && !inputValue ? (
                     <div
                       className="border-basement border-[0.025rem]"
                       aria-hidden
