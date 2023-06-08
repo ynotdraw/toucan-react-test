@@ -135,6 +135,27 @@ const MultiselectPackageD = ({
 
   const items = getFilteredItems(inputValue);
 
+  // See statement at the top of the file, this is super hacky, but I
+  // needed a way to close the popover when it is clicked outside.
+  // With the hacky way we setup downshift here where it's more like a
+  // select, this was a bit tricky. I opted for this terrible code.
+  React.useEffect(() => {
+    const closeIfClickedOutside = (e: any) => {
+      if (
+        e.target.contains(
+          document.querySelector('[data-trigger][aria-expanded="true"]')
+        )
+      ) {
+        setIsBoxOpen(false);
+      }
+    };
+
+    document.body.addEventListener("click", closeIfClickedOutside);
+    return () => {
+      document.body.removeEventListener("click", closeIfClickedOutside);
+    };
+  }, []);
+
   React.useEffect(() => {
     const isIndeterminate =
       selectedItems.length > 0 && selectedItems.length < options.length - 1;
@@ -191,14 +212,6 @@ const MultiselectPackageD = ({
         case useCombobox.stateChangeTypes.ItemClick:
         case useCombobox.stateChangeTypes.InputBlur:
           setInputValue("");
-
-          if (
-            !changes.selectedItem &&
-            type === useCombobox.stateChangeTypes.InputBlur
-          ) {
-            setIsBoxOpen(false);
-            return changes;
-          }
 
           return {
             ...changes,
@@ -267,6 +280,7 @@ const MultiselectPackageD = ({
       <div
         aria-describedby={Boolean(error) ? errorId : undefined}
         aria-expanded={isOpen}
+        data-trigger
         className="focus:shadow-focus-outline focus:outline-none flex justify-between rounded-sm p-1 transition-shadow shadow-focusable-outline bg-overlay-1 text-titles-and-attributes items-center min-h-[2.5rem]"
         ref={refs.setReference}
         onClick={() => setIsBoxOpen(!isBoxOpen)}
