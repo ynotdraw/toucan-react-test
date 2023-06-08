@@ -195,19 +195,29 @@ const MultiselectPackageB = ({ label, name, onChange }: ComboboxField) => {
           {...getMenuProps()}
         >
           {isOpen &&
-            items.map((item, index) => (
+            (items.length === 0 ? (
               <li
                 className={clsx(
-                  "p-2 text-titles-and-attributes",
-                  (highlightedIndex === index ||
-                    selectedItems.includes(item)) &&
-                    "bg-overlay-1"
+                  "p-2 flex text-titles-and-attribute items-center"
                 )}
-                key={`${item}${index}`}
-                {...getItemProps({ item, index })}
               >
-                {item}
+                No results
               </li>
+            ) : (
+              items.map((item, index) => (
+                <li
+                  className={clsx(
+                    "p-2 text-titles-and-attributes",
+                    (highlightedIndex === index ||
+                      selectedItems.includes(item)) &&
+                      "bg-overlay-1"
+                  )}
+                  key={`${item}${index}`}
+                  {...getItemProps({ item, index })}
+                >
+                  {item}
+                </li>
+              ))
             ))}
         </ul>
       </div>

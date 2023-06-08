@@ -307,9 +307,17 @@ const MultiselectPackageD = ({ label, name, onChange }: ComboboxField) => {
           }
           {...getMenuProps()}
         >
-          {isOpen && (
-            <>
-              {items.map((item, index) => (
+          {isOpen &&
+            (items.length === 0 ? (
+              <li
+                className={clsx(
+                  "p-2 flex text-titles-and-attribute items-center"
+                )}
+              >
+                No results
+              </li>
+            ) : (
+              items.map((item, index) => (
                 <React.Fragment key={`${item}${index}`}>
                   <li
                     className={clsx(
@@ -345,9 +353,8 @@ const MultiselectPackageD = ({ label, name, onChange }: ComboboxField) => {
                     />
                   ) : null}
                 </React.Fragment>
-              ))}
-            </>
-          )}
+              ))
+            ))}
         </ul>
       </div>
     </div>

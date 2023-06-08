@@ -242,23 +242,33 @@ const MultiselectPackageC = ({ label, name, onChange }: ComboboxField) => {
           {...getMenuProps()}
         >
           {isOpen &&
-            items.map((item, index) => (
+            (items.length === 0 ? (
               <li
                 className={clsx(
-                  "p-2 flex text-titles-and-attribute items-center",
-                  highlightedIndex === index && "bg-overlay-1"
+                  "p-2 flex text-titles-and-attribute items-center"
                 )}
-                key={`${item}${index}`}
-                {...getItemProps({ item, index })}
               >
-                <CheckboxControl
-                  id={`${item}${index}`}
-                  isChecked={selectedItems?.includes(item)}
-                />
-                <label className="ml-2" htmlFor={`${item}${index}`}>
-                  {item}
-                </label>
+                No results
               </li>
+            ) : (
+              items.map((item, index) => (
+                <li
+                  className={clsx(
+                    "p-2 flex text-titles-and-attribute items-center",
+                    highlightedIndex === index && "bg-overlay-1"
+                  )}
+                  key={`${item}${index}`}
+                  {...getItemProps({ item, index })}
+                >
+                  <CheckboxControl
+                    id={`${item}${index}`}
+                    isChecked={selectedItems?.includes(item)}
+                  />
+                  <label className="ml-2" htmlFor={`${item}${index}`}>
+                    {item}
+                  </label>
+                </li>
+              ))
             ))}
         </ul>
       </div>
