@@ -85,6 +85,7 @@ const CheckboxControl = ({
 };
 
 interface ComboboxField {
+  error?: string;
   label: string;
   name: string;
   onChange?: (values: Array<string>) => void;
@@ -102,7 +103,12 @@ const getFilteredItems = (inputValue: string) => {
   );
 };
 
-const MultiselectPackageD = ({ label, name, onChange }: ComboboxField) => {
+const MultiselectPackageD = ({
+  error,
+  label,
+  name,
+  onChange,
+}: ComboboxField) => {
   const { refs, floatingStyles } = useFloating({
     placement: "bottom-start",
     middleware: [
@@ -118,6 +124,8 @@ const MultiselectPackageD = ({ label, name, onChange }: ComboboxField) => {
   });
 
   const id = React.useId();
+  const errorId = React.useId();
+
   const [inputValue, setInputValue] = React.useState<string>("");
   const [selectedItems, setSelectedItems] = React.useState<Array<string>>([]);
   const [selectAllState, setSelectAllState] = React.useState<
@@ -274,6 +282,7 @@ const MultiselectPackageD = ({ label, name, onChange }: ComboboxField) => {
           ))}
 
           <input
+            aria-describedby={Boolean(error) ? errorId : undefined}
             className="bg-transparent focus:outline-none flex flex-grow"
             name={name}
             placeholder={
@@ -301,6 +310,12 @@ const MultiselectPackageD = ({ label, name, onChange }: ComboboxField) => {
           />
         </svg>
       </div>
+
+      {Boolean(error) ? (
+        <p className="type-xs-tight text-critical mt-1.5" id={errorId}>
+          {error}
+        </p>
+      ) : null}
 
       <div className="z-popover" ref={refs.setFloating} style={floatingStyles}>
         <ul
@@ -363,25 +378,84 @@ const MultiselectPackageD = ({ label, name, onChange }: ComboboxField) => {
   );
 };
 
+interface FormData {
+  name?: string;
+  toppings?: Array<string>;
+}
+interface FormErrors {
+  name?: string;
+  toppings?: string;
+}
+
 export default function MultiselectPage() {
   const router = useRouter();
+
+  const [formData, setFormData] = React.useState<FormData>({
+    name: "",
+    toppings: [],
+  });
+  const [errors, setErrors] = React.useState<FormErrors | null>(null);
 
   return (
     <form
       className="space-y-6"
       onSubmit={(e) => {
         e.preventDefault();
+
+        const errorsToDisplay: FormErrors = {};
+
+        if (!formData.name) {
+          errorsToDisplay.name = "Enter order name";
+        }
+
+        if (!formData.toppings?.length) {
+          errorsToDisplay.toppings = "Select one or more toppings";
+        }
+
+        if (errorsToDisplay.name || errorsToDisplay.toppings) {
+          setErrors(errorsToDisplay);
+          return;
+        }
+
         router.push("/multiselect/success");
       }}
     >
-      <InputField label="Order name" name="name" />
+      <InputField
+        label="Order name"
+        name="name"
+        onChange={(value) => {
+          setFormData({ ...formData, name: value });
+
+          if (errors) {
+            const errorsToDisplay: FormErrors = {};
+
+            if (errors.toppings) {
+              errorsToDisplay.toppings = errors.toppings;
+            }
+
+            setErrors(errorsToDisplay);
+          }
+        }}
+        error={errors?.name}
+      />
 
       <MultiselectPackageD
         label="Toppings to include"
         name="toppings"
         onChange={(values) => {
-          console.log(values);
+          setFormData({ ...formData, toppings: values });
+
+          if (errors) {
+            const errorsToDisplay: FormErrors = {};
+
+            if (errors.name) {
+              errorsToDisplay.name = errors.name;
+            }
+
+            setErrors(errorsToDisplay);
+          }
         }}
+        error={errors?.toppings}
       />
 
       <TextareaField
