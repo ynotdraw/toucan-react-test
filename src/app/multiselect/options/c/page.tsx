@@ -7,7 +7,7 @@ import * as React from "react";
 
 import { autoUpdate, size, useFloating } from "@floating-ui/react";
 import { Button } from "@/components/button";
-import { elements } from "../layout";
+import { options } from "@/options";
 import { InputField } from "@/components/forms/input-field";
 import { Label } from "@/components/label";
 import { TextareaField } from "@/components/forms/textarea-field";
@@ -68,11 +68,11 @@ const getFilteredItems = (inputValue: string) => {
   const lowerCasedInputValue = inputValue.toLowerCase();
 
   if (lowerCasedInputValue?.length === 0) {
-    return elements;
+    return options;
   }
 
-  return elements.filter((element) =>
-    element.toLowerCase().startsWith(lowerCasedInputValue)
+  return options.filter((option) =>
+    option.toLowerCase().startsWith(lowerCasedInputValue)
   );
 };
 

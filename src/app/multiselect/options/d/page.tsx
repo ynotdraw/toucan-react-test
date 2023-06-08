@@ -8,7 +8,7 @@ import * as React from "react";
 
 import { autoUpdate, size, useFloating } from "@floating-ui/react";
 import { Button } from "@/components/button";
-import { elements as baseElements } from "../layout";
+import { options as baseOptions } from "@/options";
 import { InputField } from "@/components/forms/input-field";
 import { Label } from "@/components/label";
 import { TextareaField } from "@/components/forms/textarea-field";
@@ -16,7 +16,7 @@ import { useMultipleSelection, useCombobox } from "downshift";
 import { useRouter } from "next/navigation";
 import clsx from "clsx";
 
-const elements = ["Select all", ...baseElements];
+const options = ["Select all", ...baseOptions];
 
 interface CheckboxControlProps extends React.ComponentPropsWithoutRef<"input"> {
   isChecked?: boolean;
@@ -95,11 +95,11 @@ const getFilteredItems = (inputValue: string) => {
   const lowerCasedInputValue = inputValue.toLowerCase();
 
   if (lowerCasedInputValue?.length === 0) {
-    return elements;
+    return options;
   }
 
-  return elements.filter((element) =>
-    element.toLowerCase().startsWith(lowerCasedInputValue)
+  return options.filter((option) =>
+    option.toLowerCase().startsWith(lowerCasedInputValue)
   );
 };
 
@@ -136,14 +136,14 @@ const MultiselectPackageD = ({
 
   React.useEffect(() => {
     const isIndeterminate =
-      selectedItems.length > 0 && selectedItems.length < elements.length - 1;
+      selectedItems.length > 0 && selectedItems.length < options.length - 1;
 
     if (isIndeterminate) {
       setSelectAllState("indeterminate");
       return;
     }
 
-    if (selectedItems.length === elements.length - 1) {
+    if (selectedItems.length === options.length - 1) {
       setSelectAllState("checked");
       return;
     }
@@ -217,15 +217,15 @@ const MultiselectPackageD = ({
           // since this is just proofing things out at the moment,
           // I'm going to ignore for the time being.
           if (newSelectedItem === "Select all") {
-            const allExceptSelectAll = [...elements].slice(1);
+            const allExceptSelectAll = [...options].slice(1);
 
-            const selectAllElements =
-              selectedItems.length === elements.length - 1
+            const selectAllOptions =
+              selectedItems.length === options.length - 1
                 ? []
                 : allExceptSelectAll;
 
-            onChange?.(selectAllElements);
-            setSelectedItems(selectAllElements);
+            onChange?.(selectAllOptions);
+            setSelectedItems(selectAllOptions);
             setInputValue("");
             break;
           }
