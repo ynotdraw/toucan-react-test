@@ -127,7 +127,7 @@ const MultiselectPackageC = ({ label, name, onChange }: ComboboxField) => {
     inputValue,
     selectedItem: null,
     stateReducer(_state, actionAndChanges) {
-      const { changes, type } = actionAndChanges;
+      const { changes, index, type } = actionAndChanges;
 
       switch (type) {
         case useCombobox.stateChangeTypes.InputKeyDownEnter:
@@ -136,7 +136,10 @@ const MultiselectPackageC = ({ label, name, onChange }: ComboboxField) => {
           setInputValue("");
           return {
             ...changes,
-            ...(changes.selectedItem && { isOpen: true, highlightedIndex: 0 }),
+            ...(changes.selectedItem && {
+              isOpen: true,
+              highlightedIndex: index,
+            }),
           };
         default:
           return changes;

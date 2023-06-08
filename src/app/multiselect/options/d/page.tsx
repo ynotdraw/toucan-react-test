@@ -174,7 +174,7 @@ const MultiselectPackageD = ({ label, name, onChange }: ComboboxField) => {
     inputValue,
     selectedItem: null,
     stateReducer(_state, actionAndChanges) {
-      const { changes, type } = actionAndChanges;
+      const { changes, index, type } = actionAndChanges;
 
       switch (type) {
         case useCombobox.stateChangeTypes.InputKeyDownEnter:
@@ -183,8 +183,10 @@ const MultiselectPackageD = ({ label, name, onChange }: ComboboxField) => {
           setInputValue("");
           return {
             ...changes,
-            ...(changes.selectedItem && { isOpen: true, highlightedIndex: 0 }),
-            // To prevent shifting when clicking an item, remove `highlightedIndex: 0` above!
+            ...(changes.selectedItem && {
+              isOpen: true,
+              highlightedIndex: index,
+            }),
           };
         default:
           return changes;
