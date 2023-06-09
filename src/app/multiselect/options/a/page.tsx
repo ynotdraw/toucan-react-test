@@ -128,6 +128,20 @@ const MultiselectControlBaseline = ({
             break;
           }
 
+          // Re-selecting an existing item should de-select it
+          if (selectedItems.includes(newSelectedItem)) {
+            const newItems = selectedItems.filter(
+              (item) => item !== newSelectedItem
+            );
+
+            onChange?.(newItems);
+            setSelectedItems(newItems);
+
+            setIsBoxOpen(false);
+            setInputValue("");
+            return;
+          }
+
           const newItems = [...selectedItems, newSelectedItem];
 
           onChange?.(newItems);
