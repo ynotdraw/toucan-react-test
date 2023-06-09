@@ -205,7 +205,7 @@ const MultiselectPackageD = ({
     isOpen: isBoxOpen,
     selectedItem: null,
     stateReducer(_state, actionAndChanges) {
-      const { changes, index, type } = actionAndChanges;
+      const { changes, type } = actionAndChanges;
 
       switch (type) {
         case useCombobox.stateChangeTypes.InputKeyDownEnter:
@@ -213,11 +213,15 @@ const MultiselectPackageD = ({
         case useCombobox.stateChangeTypes.InputBlur:
           setInputValue("");
 
+          const index = options?.findIndex(
+            (item) => item === changes.selectedItem
+          );
+
           return {
             ...changes,
             ...(changes.selectedItem && {
               isOpen: true,
-              highlightedIndex: index,
+              highlightedIndex: index >= 0 ? index : undefined,
             }),
           };
         case useCombobox.stateChangeTypes.InputKeyDownEscape:
