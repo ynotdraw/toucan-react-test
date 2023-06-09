@@ -12,7 +12,7 @@ export const TextareaField = ({ label, name, onChange }: Field) => {
 
       <textarea
         className="focus:outline-none block rounded-sm p-1 transition-shadow
-  shadow-focusable-outline focus:shadow-focus-outline bg-overlay-1 text-titles-and-attributes"
+  shadow-focusable-outline focus:shadow-focus-outline bg-overlay-1 text-titles-and-attributes resize-none"
         id={id}
         name={name}
         onChange={(e) => {
