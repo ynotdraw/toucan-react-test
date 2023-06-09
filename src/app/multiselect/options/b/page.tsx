@@ -92,7 +92,7 @@ const MultiselectPackageB = ({
     items,
     inputValue,
     selectedItem: null,
-    stateReducer(_state, actionAndChanges) {
+    stateReducer(state, actionAndChanges) {
       const { changes, type } = actionAndChanges;
 
       switch (type) {
@@ -101,15 +101,11 @@ const MultiselectPackageB = ({
         case useCombobox.stateChangeTypes.InputBlur:
           setInputValue("");
 
-          const index = options?.findIndex(
-            (item) => item === changes.selectedItem
-          );
-
           return {
             ...changes,
             ...(changes.selectedItem && {
               isOpen: true,
-              highlightedIndex: index >= 0 ? index : undefined,
+              highlightedIndex: state.highlightedIndex,
             }),
           };
         default:
