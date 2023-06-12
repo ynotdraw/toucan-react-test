@@ -15,7 +15,19 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        {/*
+
+         TODO: Need theme switcher
+               - Need to add style="color-scheme: dark;" to <html>
+               - Need to add `theme-dark` / `theme-light` to <body>
+
+         TODO: theme-light / theme-dark needs to go on the body instead (see above)
+         Probably want something similar to https://github.com/tailwindlabs/tailwindcss.com/blob/dff1b6211acb2286b4094b992ac145211734400d/src/pages/_document.js#L35
+
+        */}
+        <main className="min-h-screen grid theme-light">{children}</main>
+      </body>
     </html>
   );
 }
