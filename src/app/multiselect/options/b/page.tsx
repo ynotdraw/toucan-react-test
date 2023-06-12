@@ -366,6 +366,10 @@ export default function MultiselectPage() {
               errorsToDisplay.name = errors.name;
             }
 
+            if ((values || [])?.length < 2) {
+              errorsToDisplay.toppings = errors.toppings;
+            }
+
             setErrors(errorsToDisplay);
           }
         }}
