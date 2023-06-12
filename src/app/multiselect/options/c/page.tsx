@@ -197,7 +197,12 @@ const MultiselectPackageC = ({
   });
   return (
     <div className="space-y-1.5">
-      <Label {...getLabelProps()}>{label}</Label>
+      <Label {...getLabelProps()}>
+        {label}
+        <span className="block type-xs-tight text-body-and-labels mt-0.5">
+          Select two or more toppings
+        </span>
+      </Label>
 
       <div
         className="focus:outline-none flex justify-between rounded-sm p-1 transition-shadow shadow-focusable-outline focus-within:shadow-focus-outline bg-overlay-1 text-titles-and-attributes items-center min-h-[2.5rem]"
@@ -343,8 +348,11 @@ export default function MultiselectPage() {
           errorsToDisplay.name = "Enter order name";
         }
 
-        if (!formData.toppings?.length) {
-          errorsToDisplay.toppings = "Select one or more toppings";
+        if (
+          !formData.toppings?.length ||
+          (formData.toppings || []).length < 2
+        ) {
+          errorsToDisplay.toppings = "Select two or more toppings";
         }
 
         if (errorsToDisplay.name || errorsToDisplay.toppings) {

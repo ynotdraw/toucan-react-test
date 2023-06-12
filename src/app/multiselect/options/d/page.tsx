@@ -249,7 +249,12 @@ const MultiselectPackageD = ({
   });
   return (
     <div className="space-y-1.5">
-      <Label {...getLabelProps()}>{label}</Label>
+      <Label {...getLabelProps()}>
+        {label}
+        <span className="block type-xs-tight text-body-and-labels mt-0.5">
+          Select two or more toppings
+        </span>
+      </Label>
 
       <div
         className={clsx(
@@ -409,8 +414,11 @@ export default function MultiselectPage() {
           errorsToDisplay.name = "Enter order name";
         }
 
-        if (!formData.toppings?.length) {
-          errorsToDisplay.toppings = "Select one or more toppings";
+        if (
+          !formData.toppings?.length ||
+          (formData.toppings || []).length < 2
+        ) {
+          errorsToDisplay.toppings = "Select two or more toppings";
         }
 
         if (errorsToDisplay.name || errorsToDisplay.toppings) {
