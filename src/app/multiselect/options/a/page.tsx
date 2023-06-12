@@ -112,6 +112,16 @@ const MultiselectControlBaseline = ({
             ...changes,
             ...(changes.selectedItem && { isOpen: true, highlightedIndex: 0 }),
           };
+        case useCombobox.stateChangeTypes.InputKeyDownEscape:
+          if (isBoxOpen) {
+            setIsBoxOpen(false);
+          }
+          return changes;
+        case useCombobox.stateChangeTypes.InputKeyDownArrowDown:
+          if (!isBoxOpen) {
+            setIsBoxOpen(true);
+          }
+          return changes;
         default:
           return changes;
       }
