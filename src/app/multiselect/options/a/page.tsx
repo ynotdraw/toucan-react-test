@@ -57,7 +57,6 @@ const MultiselectControlBaseline = ({
   const id = React.useId();
   const errorId = React.useId();
 
-  const [isBoxOpen, setIsBoxOpen] = React.useState<boolean>(false);
   const [inputValue, setInputValue] = React.useState<string>("");
   const [selectedItems, setSelectedItems] = React.useState<Array<string>>([]);
 
@@ -88,11 +87,11 @@ const MultiselectControlBaseline = ({
     getInputProps,
     highlightedIndex,
     getItemProps,
+    openMenu,
   } = useCombobox({
     id,
     items,
     inputValue,
-    isOpen: isBoxOpen,
     selectedItem: null,
     stateReducer(_state, actionAndChanges) {
       const { changes, type } = actionAndChanges;
@@ -105,23 +104,16 @@ const MultiselectControlBaseline = ({
             return changes;
           }
 
-          setIsBoxOpen(false);
           setInputValue("");
 
           return {
             ...changes,
-            ...(changes.selectedItem && { isOpen: true, highlightedIndex: 0 }),
+            ...(changes.selectedItem && { isOpen: false, highlightedIndex: 0 }),
           };
         case useCombobox.stateChangeTypes.InputKeyDownEscape:
-          if (isBoxOpen) {
-            setIsBoxOpen(false);
-          }
-          return changes;
+          return { ...changes, isOpen: false };
         case useCombobox.stateChangeTypes.InputKeyDownArrowDown:
-          if (!isBoxOpen) {
-            setIsBoxOpen(true);
-          }
-          return changes;
+          return { ...changes, isOpen: true };
         default:
           return changes;
       }
@@ -147,7 +139,6 @@ const MultiselectControlBaseline = ({
             onChange?.(newItems);
             setSelectedItems(newItems);
 
-            setIsBoxOpen(false);
             setInputValue("");
             return;
           }
@@ -157,16 +148,10 @@ const MultiselectControlBaseline = ({
           onChange?.(newItems);
           setSelectedItems(newItems);
 
-          setIsBoxOpen(false);
           setInputValue("");
           break;
         case useCombobox.stateChangeTypes.InputChange:
           setInputValue(newInputValue);
-
-          if (!isBoxOpen) {
-            setIsBoxOpen(true);
-          }
-
           break;
         default:
           break;
@@ -180,9 +165,7 @@ const MultiselectControlBaseline = ({
       <div
         className="focus:outline-none flex flex-wrap rounded-sm p-1 transition-shadow shadow-focusable-outline focus:shadow-focus-outline bg-overlay-1 text-titles-and-attributes items-center gap-1 min-h-[2.5rem] focus-within:shadow-focus-outline"
         ref={refs.setReference}
-        onClick={() => setIsBoxOpen(true)}
-        onFocus={() => setIsBoxOpen(true)}
-        onBlur={() => setIsBoxOpen(false)}
+        onClick={() => openMenu()}
       >
         {selectedItems.map((selectedItem, index) => (
           <span
@@ -195,6 +178,7 @@ const MultiselectControlBaseline = ({
             <button
               aria-label={`Remove "${selectedItem}"`}
               className="ml-2 focusable"
+              type="button"
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -215,45 +199,12 @@ const MultiselectControlBaseline = ({
             selectedItems?.length === 0 ? "Select toppings" : undefined
           }
           {...getInputProps({
+            onFocus: () => {
+              openMenu();
+            },
             ...getDropdownProps({
               preventKeyAction: isOpen,
             }),
-            onKeyDown: (e) => {
-              e.preventDefault();
-
-              if (selectedItems?.length > 0 && e.shiftKey && e.key === "Tab") {
-                (
-                  document.querySelector(
-                    "[data-test-input]"
-                  ) as HTMLInputElement
-                )?.focus();
-                return;
-              }
-
-              if (e.key === "Tab") {
-                (
-                  document.querySelector(
-                    "[data-test-textarea]"
-                  ) as HTMLTextAreaElement
-                )?.focus();
-                return;
-              }
-
-              if (
-                selectedItems?.length > 0 &&
-                e.currentTarget.value?.length === 0 &&
-                e.key === "Backspace"
-              ) {
-                const newItems = [...selectedItems];
-                newItems.pop();
-                setSelectedItems(newItems);
-                onChange?.(newItems);
-
-                if (isBoxOpen) {
-                  setIsBoxOpen(false);
-                }
-              }
-            },
           })}
         />
       </div>
