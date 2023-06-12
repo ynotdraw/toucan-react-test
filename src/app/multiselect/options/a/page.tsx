@@ -248,6 +248,10 @@ const MultiselectControlBaseline = ({
                 newItems.pop();
                 setSelectedItems(newItems);
                 onChange?.(newItems);
+
+                if (isBoxOpen) {
+                  setIsBoxOpen(false);
+                }
               }
             },
           })}
