@@ -20,6 +20,7 @@ export const TextareaField = ({ label, name, onChange }: Field) => {
           onChange?.(e.target.value);
         }}
         value={value}
+        data-test-textarea
       />
     </div>
   );

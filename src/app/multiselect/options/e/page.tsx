@@ -293,11 +293,17 @@ const MultiselectPackageD = ({
           }
 
           if (!e.shiftKey && e.key === "Tab") {
-            document.querySelector("textarea")?.focus();
+            (
+              document.querySelector(
+                "[data-test-textarea]"
+              ) as HTMLTextAreaElement
+            )?.focus();
           }
 
           if (e.shiftKey && e.key === "Tab") {
-            document.querySelector("input")?.focus();
+            (
+              document.querySelector("[data-test-input]") as HTMLInputElement
+            )?.focus();
           }
         }}
         tabIndex={0}

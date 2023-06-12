@@ -140,6 +140,7 @@ const MultiselectControlBaseline = ({
 
           // Re-selecting an existing item should de-select it
           if (selectedItems.includes(newSelectedItem)) {
+            console.log("removing...");
             const newItems = selectedItems.filter(
               (item) => item !== newSelectedItem
             );
@@ -214,7 +215,21 @@ const MultiselectControlBaseline = ({
           placeholder={
             selectedItems?.length === 0 ? "Select toppings" : undefined
           }
-          {...getInputProps(getDropdownProps({ preventKeyAction: isOpen }))}
+          {...getInputProps({
+            ...getDropdownProps({
+              preventKeyAction: isOpen,
+            }),
+            onKeyDown: (e) => {
+              e.preventDefault();
+              if (selectedItems?.length > 0 && e.shiftKey && e.key === "Tab") {
+                (
+                  document.querySelector(
+                    "[data-test-input]"
+                  ) as HTMLInputElement
+                )?.focus();
+              }
+            },
+          })}
         />
       </div>
 

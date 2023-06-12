@@ -22,6 +22,7 @@ export const InputField = ({ error, label, name, onChange }: Field) => {
           onChange?.(e.target.value);
         }}
         value={value}
+        data-test-input
       />
 
       {Boolean(error) ? (
