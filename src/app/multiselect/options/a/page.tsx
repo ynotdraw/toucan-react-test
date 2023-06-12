@@ -204,6 +204,11 @@ const MultiselectControlBaseline = ({
             },
             ...getDropdownProps({
               preventKeyAction: isOpen,
+              onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                }
+              },
             }),
           })}
         />
