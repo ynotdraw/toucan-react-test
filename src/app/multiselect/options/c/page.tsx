@@ -56,7 +56,6 @@ const CheckboxControl = ({
     </div>
   );
 };
-
 interface ComboboxField {
   error?: string;
   label: string;
@@ -129,6 +128,7 @@ const MultiselectPackageC = ({
     getInputProps,
     highlightedIndex,
     getItemProps,
+    openMenu,
   } = useCombobox({
     id,
     items,
@@ -141,6 +141,15 @@ const MultiselectPackageC = ({
         case useCombobox.stateChangeTypes.InputKeyDownEnter:
         case useCombobox.stateChangeTypes.ItemClick:
         case useCombobox.stateChangeTypes.InputBlur:
+          if (inputValue === "" || !highlightedIndex) {
+            return {
+              ...changes,
+              highlightedIndex: state.highlightedIndex,
+              isOpen:
+                type !== useCombobox.stateChangeTypes.InputBlur ? true : false,
+            };
+          }
+
           setInputValue("");
 
           return {
@@ -150,6 +159,10 @@ const MultiselectPackageC = ({
               highlightedIndex: state.highlightedIndex,
             }),
           };
+        case useCombobox.stateChangeTypes.InputKeyDownEscape:
+          return { ...changes, isOpen: false };
+        case useCombobox.stateChangeTypes.InputKeyDownArrowDown:
+          return { ...changes, isOpen: true };
         default:
           return changes;
       }
@@ -187,11 +200,9 @@ const MultiselectPackageC = ({
       <Label {...getLabelProps()}>{label}</Label>
 
       <div
-        className={clsx(
-          "focus:outline-none flex justify-between rounded-sm p-1 transition-shadow shadow-focusable-outline bg-overlay-1 text-titles-and-attributes items-center min-h-[2.5rem]",
-          isOpen && "shadow-focus-outline"
-        )}
+        className="focus:outline-none flex justify-between rounded-sm p-1 transition-shadow shadow-focusable-outline focus-within:shadow-focus-outline bg-overlay-1 text-titles-and-attributes items-center min-h-[2.5rem]"
         ref={refs.setReference}
+        onClick={() => openMenu()}
       >
         <div className="flex flex-wrap gap-1 w-full">
           {selectedItems.map((selectedItem, index) => (
@@ -205,6 +216,7 @@ const MultiselectPackageC = ({
               <button
                 aria-label={`Remove "${selectedItem}"`}
                 className="ml-2 focusable"
+                type="button"
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
@@ -219,12 +231,20 @@ const MultiselectPackageC = ({
 
           <input
             aria-describedby={Boolean(error) ? errorId : undefined}
-            className="bg-transparent focus:outline-none flex flex-grow"
+            className="bg-transparent focus:outline-none"
             name={name}
             placeholder={
               selectedItems?.length === 0 ? "Select toppings" : undefined
             }
-            {...getInputProps(getDropdownProps({ preventKeyAction: isOpen }))}
+            {...getInputProps({
+              ...getDropdownProps({
+                onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                  }
+                },
+              }),
+            })}
           />
         </div>
 
@@ -256,7 +276,7 @@ const MultiselectPackageC = ({
       <div className="z-popover" ref={refs.setFloating} style={floatingStyles}>
         <ul
           className={
-            "bg-surface-2xl shadow-xl absolute overflow-y-auto max-h-[17rem] space-y-1 w-full"
+            "bg-surface-2xl shadow-xl absolute overflow-y-auto max-h-[15.5rem] w-full"
           }
           {...getMenuProps()}
         >
@@ -282,6 +302,7 @@ const MultiselectPackageC = ({
                   <CheckboxControl
                     id={`${item}${index}`}
                     isChecked={selectedItems?.includes(item)}
+                    tabIndex={-1}
                   />
                   <label className="ml-2" htmlFor={`${item}${index}`}>
                     {item}
@@ -307,10 +328,7 @@ interface FormErrors {
 export default function MultiselectPage() {
   const router = useRouter();
 
-  const [formData, setFormData] = React.useState<FormData>({
-    name: "",
-    toppings: [],
-  });
+  const [formData, setFormData] = React.useState<FormData>({});
   const [errors, setErrors] = React.useState<FormErrors | null>(null);
 
   return (
@@ -379,7 +397,6 @@ export default function MultiselectPage() {
         label="Special instructions (optional)"
         name="instructions"
       />
-
       <Button type="submit">Submit</Button>
     </form>
   );
