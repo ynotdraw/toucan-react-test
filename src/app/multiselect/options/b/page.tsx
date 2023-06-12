@@ -87,6 +87,8 @@ const MultiselectPackageB = ({
     getInputProps,
     highlightedIndex,
     getItemProps,
+    openMenu,
+    closeMenu,
   } = useCombobox({
     id,
     items,
@@ -99,6 +101,14 @@ const MultiselectPackageB = ({
         case useCombobox.stateChangeTypes.InputKeyDownEnter:
         case useCombobox.stateChangeTypes.ItemClick:
         case useCombobox.stateChangeTypes.InputBlur:
+          if (inputValue === "" || !highlightedIndex) {
+            return {
+              ...changes,
+              highlightedIndex: state.highlightedIndex,
+              isOpen: true,
+            };
+          }
+
           setInputValue("");
 
           return {
@@ -108,6 +118,10 @@ const MultiselectPackageB = ({
               highlightedIndex: state.highlightedIndex,
             }),
           };
+        case useCombobox.stateChangeTypes.InputKeyDownEscape:
+          return { ...changes, isOpen: false };
+        case useCombobox.stateChangeTypes.InputKeyDownArrowDown:
+          return { ...changes, isOpen: true };
         default:
           return changes;
       }
@@ -141,6 +155,7 @@ const MultiselectPackageB = ({
 
           onChange?.(newItems);
           setSelectedItems(newItems);
+
           setInputValue("");
           break;
         case useCombobox.stateChangeTypes.InputChange:
@@ -158,6 +173,8 @@ const MultiselectPackageB = ({
       <div
         className="focus:outline-none flex justify-between rounded-sm p-1 transition-shadow shadow-focusable-outline focus-within:shadow-focus-outline bg-overlay-1 text-titles-and-attributes items-center min-h-[2.5rem]"
         ref={refs.setReference}
+        onClick={() => openMenu()}
+        onBlur={() => closeMenu()}
       >
         <div className="flex flex-wrap gap-1 w-full">
           {selectedItems.map((selectedItem, index) => (
@@ -171,6 +188,7 @@ const MultiselectPackageB = ({
               <button
                 aria-label={`Remove "${selectedItem}"`}
                 className="ml-2 focusable"
+                type="button"
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
@@ -185,12 +203,24 @@ const MultiselectPackageB = ({
 
           <input
             aria-describedby={Boolean(error) ? errorId : undefined}
-            className="bg-transparent focus:outline-none flex flex-grow"
+            className="bg-transparent focus:outline-none"
             name={name}
             placeholder={
               selectedItems?.length === 0 ? "Select toppings" : undefined
             }
-            {...getInputProps(getDropdownProps({ preventKeyAction: isOpen }))}
+            {...getInputProps({
+              onFocus: () => {
+                openMenu();
+              },
+              ...getDropdownProps({
+                preventKeyAction: isOpen,
+                onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                  }
+                },
+              }),
+            })}
           />
         </div>
 
@@ -240,6 +270,7 @@ const MultiselectPackageB = ({
                 <li
                   className={clsx(
                     "p-2 text-titles-and-attributes",
+                    highlightedIndex === index && "bg-overlay-1",
                     (highlightedIndex === index ||
                       selectedItems.includes(item)) &&
                       "bg-overlay-1"
@@ -269,10 +300,7 @@ interface FormErrors {
 export default function MultiselectPage() {
   const router = useRouter();
 
-  const [formData, setFormData] = React.useState<FormData>({
-    name: "",
-    toppings: [],
-  });
+  const [formData, setFormData] = React.useState<FormData>({});
   const [errors, setErrors] = React.useState<FormErrors | null>(null);
 
   return (
