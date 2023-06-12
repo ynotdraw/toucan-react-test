@@ -140,7 +140,6 @@ const MultiselectControlBaseline = ({
 
           // Re-selecting an existing item should de-select it
           if (selectedItems.includes(newSelectedItem)) {
-            console.log("removing...");
             const newItems = selectedItems.filter(
               (item) => item !== newSelectedItem
             );
@@ -221,12 +220,34 @@ const MultiselectControlBaseline = ({
             }),
             onKeyDown: (e) => {
               e.preventDefault();
+
               if (selectedItems?.length > 0 && e.shiftKey && e.key === "Tab") {
                 (
                   document.querySelector(
                     "[data-test-input]"
                   ) as HTMLInputElement
                 )?.focus();
+                return;
+              }
+
+              if (e.key === "Tab") {
+                (
+                  document.querySelector(
+                    "[data-test-textarea]"
+                  ) as HTMLTextAreaElement
+                )?.focus();
+                return;
+              }
+
+              if (
+                selectedItems?.length > 0 &&
+                e.currentTarget.value?.length === 0 &&
+                e.key === "Backspace"
+              ) {
+                const newItems = [...selectedItems];
+                newItems.pop();
+                setSelectedItems(newItems);
+                onChange?.(newItems);
               }
             },
           })}
