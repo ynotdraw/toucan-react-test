@@ -103,7 +103,7 @@ const getFilteredItems = (inputValue: string) => {
   );
 };
 
-const MultiselectPackageD = ({
+const MultiselectPackageE = ({
   error,
   label,
   name,
@@ -126,7 +126,6 @@ const MultiselectPackageD = ({
   const id = React.useId();
   const errorId = React.useId();
 
-  const [isBoxOpen, setIsBoxOpen] = React.useState<boolean>(false);
   const [inputValue, setInputValue] = React.useState<string>("");
   const [selectedItems, setSelectedItems] = React.useState<Array<string>>([]);
   const [selectAllState, setSelectAllState] = React.useState<
@@ -134,27 +133,6 @@ const MultiselectPackageD = ({
   >("unchecked");
 
   const items = getFilteredItems(inputValue);
-
-  // See statement at the top of the file, this is super hacky, but I
-  // needed a way to close the popover when it is clicked outside.
-  // With the hacky way we setup downshift here where it's more like a
-  // select, this was a bit tricky. I opted for this terrible code.
-  React.useEffect(() => {
-    const closeIfClickedOutside = (e: any) => {
-      if (
-        e.target.contains(
-          document.querySelector('[data-trigger][aria-expanded="true"]')
-        )
-      ) {
-        setIsBoxOpen(false);
-      }
-    };
-
-    document.body.addEventListener("click", closeIfClickedOutside);
-    return () => {
-      document.body.removeEventListener("click", closeIfClickedOutside);
-    };
-  }, []);
 
   React.useEffect(() => {
     const isIndeterminate =
@@ -198,11 +176,12 @@ const MultiselectPackageD = ({
     getInputProps,
     highlightedIndex,
     getItemProps,
+    openMenu,
+    closeMenu,
   } = useCombobox({
     id,
     items,
     inputValue,
-    isOpen: isBoxOpen,
     selectedItem: null,
     stateReducer(state, actionAndChanges) {
       const { changes, type } = actionAndChanges;
@@ -221,8 +200,7 @@ const MultiselectPackageD = ({
             }),
           };
         case useCombobox.stateChangeTypes.InputKeyDownEscape:
-          setIsBoxOpen(false);
-          return changes;
+          return { ...changes, isOpen: false };
         default:
           return changes;
       }
@@ -235,10 +213,6 @@ const MultiselectPackageD = ({
       switch (type) {
         case useCombobox.stateChangeTypes.InputKeyDownEnter:
         case useCombobox.stateChangeTypes.ItemClick:
-          if (newInputValue === "" || !newSelectedItem) {
-            break;
-          }
-
           // NOTE: For some reason this is triggering
           // `onChange` twice when clicked.  I'm not sure why, but
           // since this is just proofing things out at the moment,
@@ -273,6 +247,28 @@ const MultiselectPackageD = ({
       }
     },
   });
+
+  // See statement at the top of the file, this is super hacky, but I
+  // needed a way to close the popover when it is clicked outside.
+  // With the hacky way we setup downshift here where it's more like a
+  // select, this was a bit tricky. I opted for this terrible code.
+  React.useEffect(() => {
+    const closeIfClickedOutside = (e: any) => {
+      if (
+        e.target.contains(
+          document.querySelector('[data-trigger][aria-expanded="true"]')
+        )
+      ) {
+        closeMenu();
+      }
+    };
+
+    document.body.addEventListener("click", closeIfClickedOutside);
+    return () => {
+      document.body.removeEventListener("click", closeIfClickedOutside);
+    };
+  }, [closeMenu]);
+
   return (
     <div className="space-y-1.5">
       <Label {...getLabelProps()}>
@@ -285,32 +281,10 @@ const MultiselectPackageD = ({
       <div
         aria-describedby={Boolean(error) ? errorId : undefined}
         aria-expanded={isOpen}
-        data-trigger
         className="focus:shadow-focus-outline focus:outline-none flex justify-between rounded-sm p-1 transition-shadow shadow-focusable-outline bg-overlay-1 text-titles-and-attributes items-center min-h-[2.5rem]"
+        data-trigger
         ref={refs.setReference}
-        onClick={() => setIsBoxOpen(!isBoxOpen)}
-        onKeyDown={(e) => {
-          e.preventDefault();
-
-          // We want keyboard users to be able to use the keyboard
-          if (e.key === "Enter" || e.key === " ") {
-            setIsBoxOpen(true);
-          }
-
-          if (!e.shiftKey && e.key === "Tab") {
-            (
-              document.querySelector(
-                "[data-test-textarea]"
-              ) as HTMLTextAreaElement
-            )?.focus();
-          }
-
-          if (e.shiftKey && e.key === "Tab") {
-            (
-              document.querySelector("[data-test-input]") as HTMLInputElement
-            )?.focus();
-          }
-        }}
+        onClick={() => openMenu()}
         tabIndex={0}
         role="button"
       >
@@ -329,6 +303,7 @@ const MultiselectPackageD = ({
                 <button
                   aria-label={`Remove "${selectedItem}"`}
                   className="ml-2 focusable"
+                  type="button"
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
@@ -382,11 +357,19 @@ const MultiselectPackageD = ({
             shadow-focusable-outline focus:shadow-focus-outline bg-overlay-1 text-titles-and-attributes w-full"
             name={name}
             placeholder="Filter options..."
-            {...getInputProps(getDropdownProps({ preventKeyAction: isOpen }))}
+            {...getInputProps(
+              getDropdownProps({
+                onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => {
+                  if (e.key === "Tab" && isOpen) {
+                    closeMenu();
+                  }
+                },
+              })
+            )}
           />
         </div>
 
-        <ul className="max-h-80 space-y-1" {...getMenuProps()}>
+        <ul className="max-h-[16.5rem] space-y-1" {...getMenuProps()}>
           {isOpen &&
             (items.length === 0 ? (
               <li
@@ -420,6 +403,7 @@ const MultiselectPackageD = ({
                           ? true
                           : false
                       }
+                      tabIndex={-1}
                     />
                     <label className="ml-2" htmlFor={`${item}${index}`}>
                       {item}
@@ -453,10 +437,7 @@ interface FormErrors {
 export default function MultiselectPage() {
   const router = useRouter();
 
-  const [formData, setFormData] = React.useState<FormData>({
-    name: "",
-    toppings: [],
-  });
+  const [formData, setFormData] = React.useState<FormData>({});
   const [errors, setErrors] = React.useState<FormErrors | null>(null);
 
   return (
@@ -505,7 +486,7 @@ export default function MultiselectPage() {
         error={errors?.name}
       />
 
-      <MultiselectPackageD
+      <MultiselectPackageE
         label="Toppings to include"
         name="toppings"
         onChange={(values) => {
