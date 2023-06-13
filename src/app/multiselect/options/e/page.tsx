@@ -238,6 +238,14 @@ const MultiselectPackageE = ({
           onChange?.(newItems);
           setSelectedItems(newItems);
           setInputValue("");
+
+          // HACK:
+          // For some reason when clicking an item the focus is lost and put
+          // back on the body.  This keeps focus on the search instead.
+          (
+            document.querySelector("[data-filter]") as HTMLInputElement
+          )?.focus();
+
           break;
         case useCombobox.stateChangeTypes.InputChange:
           setInputValue(newInputValue);
@@ -314,6 +322,7 @@ const MultiselectPackageE = ({
                   aria-label={`Remove "${selectedItem}"`}
                   className="ml-2 focusable"
                   type="button"
+                  tabIndex={-1}
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
@@ -367,6 +376,7 @@ const MultiselectPackageE = ({
             shadow-focusable-outline focus:shadow-focus-outline bg-overlay-1 text-titles-and-attributes w-full"
             name={name}
             placeholder="Filter options..."
+            data-filter
             {...getInputProps(
               getDropdownProps({
                 onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => {
