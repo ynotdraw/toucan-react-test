@@ -44,7 +44,7 @@ const CheckboxControl = ({
   }, [isIndeterminate]);
 
   return (
-    <div className="min-w-4 min-h-4 relative flex h-4 w-4 items-center justify-center">
+    <div className="min-w-4 min-h-4 relative flex h-4 w-4 items-center justify-center z-9">
       <input
         className={clsx(
           "border-body-and-labels focusable-outer focus:outline-none inline-block h-4 w-4 transform-gpu appearance-none rounded-sm border p-0 align-middle focus-visible:scale-75 ",
@@ -355,13 +355,13 @@ const MultiselectPackageE = ({
 
       <div
         className={clsx(
-          "z-popover bg-surface-2xl shadow-xl absolute overflow-y-auto w-full",
+          "z-popover bg-surface-2xl shadow-xl absolute max-h-[17rem] overflow-y-auto w-full",
           !isOpen && "hidden"
         )}
         ref={refs.setFloating}
         style={floatingStyles}
       >
-        <div className="p-2">
+        <div className="p-2 sticky bg-surface-2xl top-0 z-10">
           <input
             className="focus:outline-none block rounded-sm p-1 transition-shadow
             shadow-focusable-outline focus:shadow-focus-outline bg-overlay-1 text-titles-and-attributes w-full"
