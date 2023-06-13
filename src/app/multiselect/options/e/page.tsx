@@ -285,9 +285,19 @@ const MultiselectPackageE = ({
         data-trigger
         ref={refs.setReference}
         onClick={() => openMenu()}
+        onKeyDown={(e) => {
+          if (!isOpen && (e.key === "Enter" || e.key === " ")) {
+            e.preventDefault();
+            openMenu();
+          }
+        }}
         tabIndex={0}
         role="button"
       >
+        <span className="sr-only">
+          Use Enter or Space keys to open the menu to choose toppings.
+        </span>
+
         {selectedItems?.length === 0 ? (
           <p className="text-disabled select-none">Select toppings</p>
         ) : (
