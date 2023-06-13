@@ -129,6 +129,7 @@ const MultiselectPackageC = ({
     highlightedIndex,
     getItemProps,
     openMenu,
+    closeMenu,
   } = useCombobox({
     id,
     items,
@@ -141,15 +142,6 @@ const MultiselectPackageC = ({
         case useCombobox.stateChangeTypes.InputKeyDownEnter:
         case useCombobox.stateChangeTypes.ItemClick:
         case useCombobox.stateChangeTypes.InputBlur:
-          if (inputValue === "" || !highlightedIndex) {
-            return {
-              ...changes,
-              highlightedIndex: state.highlightedIndex,
-              isOpen:
-                type !== useCombobox.stateChangeTypes.InputBlur ? true : false,
-            };
-          }
-
           setInputValue("");
 
           return {
@@ -246,6 +238,10 @@ const MultiselectPackageC = ({
                 onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => {
                   if (e.key === "Enter") {
                     e.preventDefault();
+                  }
+
+                  if (e.key === "Tab" && isOpen) {
+                    closeMenu();
                   }
                 },
               }),
