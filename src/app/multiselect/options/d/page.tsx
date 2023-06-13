@@ -176,6 +176,8 @@ const MultiselectPackageD = ({
     getInputProps,
     highlightedIndex,
     getItemProps,
+    openMenu,
+    closeMenu,
   } = useCombobox({
     id,
     items,
@@ -197,6 +199,10 @@ const MultiselectPackageD = ({
               highlightedIndex: state.highlightedIndex,
             }),
           };
+        case useCombobox.stateChangeTypes.InputKeyDownEscape:
+          return { ...changes, isOpen: false };
+        case useCombobox.stateChangeTypes.InputKeyDownArrowDown:
+          return { ...changes, isOpen: true };
         default:
           return changes;
       }
@@ -257,11 +263,9 @@ const MultiselectPackageD = ({
       </Label>
 
       <div
-        className={clsx(
-          "focus:outline-none flex justify-between rounded-sm p-1 transition-shadow shadow-focusable-outline bg-overlay-1 text-titles-and-attributes items-center min-h-[2.5rem]",
-          isOpen && "shadow-focus-outline"
-        )}
+        className="focus:outline-none flex justify-between rounded-sm p-1 transition-shadow shadow-focusable-outline focus-within:shadow-focus-outline bg-overlay-1 text-titles-and-attributes items-center min-h-[2.5rem]"
         ref={refs.setReference}
+        onClick={() => openMenu()}
       >
         <div className="flex flex-wrap gap-1 w-full">
           {selectedItems.map((selectedItem, index) => (
@@ -275,6 +279,7 @@ const MultiselectPackageD = ({
               <button
                 aria-label={`Remove "${selectedItem}"`}
                 className="ml-2 focusable"
+                type="button"
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
@@ -289,12 +294,24 @@ const MultiselectPackageD = ({
 
           <input
             aria-describedby={Boolean(error) ? errorId : undefined}
-            className="bg-transparent focus:outline-none flex flex-grow"
+            className="bg-transparent focus:outline-none"
             name={name}
             placeholder={
               selectedItems?.length === 0 ? "Select toppings" : undefined
             }
-            {...getInputProps(getDropdownProps({ preventKeyAction: isOpen }))}
+            {...getInputProps({
+              ...getDropdownProps({
+                onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                  }
+
+                  if (e.key === "Tab" && isOpen) {
+                    closeMenu();
+                  }
+                },
+              }),
+            })}
           />
         </div>
 
@@ -326,7 +343,7 @@ const MultiselectPackageD = ({
       <div className="z-popover" ref={refs.setFloating} style={floatingStyles}>
         <ul
           className={
-            "bg-surface-2xl shadow-xl absolute overflow-y-auto max-h-80 space-y-1 w-full"
+            "bg-surface-2xl shadow-xl absolute overflow-y-auto max-h-[15.5rem] w-full"
           }
           {...getMenuProps()}
         >
@@ -396,10 +413,7 @@ interface FormErrors {
 export default function MultiselectPage() {
   const router = useRouter();
 
-  const [formData, setFormData] = React.useState<FormData>({
-    name: "",
-    toppings: [],
-  });
+  const [formData, setFormData] = React.useState<FormData>({});
   const [errors, setErrors] = React.useState<FormErrors | null>(null);
 
   return (
