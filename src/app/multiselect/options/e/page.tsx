@@ -228,6 +228,13 @@ const MultiselectPackageE = ({
             onChange?.(selectAllOptions);
             setSelectedItems(selectAllOptions);
             setInputValue("");
+
+            // HACK:
+            // For some reason when clicking an item the focus is lost and put
+            // back on the body.  This keeps focus on the search instead.
+            (
+              document.querySelector("[data-filter]") as HTMLInputElement
+            )?.focus();
             break;
           }
 
