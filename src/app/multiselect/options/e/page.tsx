@@ -322,12 +322,17 @@ const MultiselectPackageE = ({
                   aria-label={`Remove "${selectedItem}"`}
                   className="ml-2 focusable"
                   type="button"
-                  tabIndex={-1}
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
 
                     removeSelectedItem(selectedItem);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      removeSelectedItem(selectedItem);
+                    }
                   }}
                 >
                   &#10005;
