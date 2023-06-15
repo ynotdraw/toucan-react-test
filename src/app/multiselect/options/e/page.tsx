@@ -213,6 +213,10 @@ const MultiselectPackageE = ({
       switch (type) {
         case useCombobox.stateChangeTypes.InputKeyDownEnter:
         case useCombobox.stateChangeTypes.ItemClick:
+          if (newInputValue === "" || !newSelectedItem) {
+            break;
+          }
+
           // NOTE: For some reason this is triggering
           // `onChange` twice when clicked.  I'm not sure why, but
           // since this is just proofing things out at the moment,
